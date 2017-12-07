@@ -28,7 +28,7 @@ POST /api/bookmarks
 ```
 How it will work:
 - check that `url` is present and it is a valid url
-- проверяем, что тайтл и хотя бы один тег присутствуют  
+- check that `title` and at least one tag are present
 - проверяем, что букмарка с таким же урлом еще нет  
 - добавляем букмарк в базу  
 - досоздаем теги, которых нет  
