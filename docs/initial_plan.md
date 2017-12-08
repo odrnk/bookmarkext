@@ -164,7 +164,7 @@ The grid is virtualized, i.e. it shows the limited amount of bookmarks and loads
 "Tags" contains comma-separated list of all tags of the bookmark. "Snapshot" contains the link to the snapshot of the page.
 
 It must be possible to hide/show columns the same as in firefox:
-![show/hide columns](show_hide_columns.png)
+![show/hide columns](show_hide_columns.PNG)
 
 Except column names are different and "Title" column cannot be hidden. By default columns "Most Recent Visit", "Last Modified", "Visit Count" are hidden.
 
