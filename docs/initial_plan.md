@@ -42,20 +42,20 @@ How it will work:
 
 ## Relations between tags
 
-Root tags - это теги у которых нету парента в таблице `tag_arrow`.  
-Получить все root tags:
+Root tags are tags that have no parents in `tag_arrow` table.  
+Get all root tags:
 ```
 GET /api/tags/roots
 ```
-Получить все чайлд теги данного тега:
+Get all children of the tag:
 ```
 GET /api/tags/{id}/children
 ```
-Получить все родительские теги данного тега:
+Get all parent tags of the tag:
 ```
 GET /api/tags/{id}/parents
 ```
-Получить все букмарки тега:
+Get all bookmarks of the tag:
 ```
 GET /api/tags/{id}/bookmarks
 ```
@@ -63,13 +63,13 @@ Get all root bookmarks (that have no tags):
 ```
 GET /api/bookmarks/roots
 ```
-Это все для навигации как по дереву каталогов в файловой системе. Реализация запросов очевидна.
+This is all that is needed to navigate like in a  file sytem. The implementation of the requests is obvious.
 
-Чтобы создать связь парент-чайлд между тегами:
+To create a new parent-child relation between tags:
 ```
 POST /api/tags/{id}/parents/{parent_tag_id}
 ```
-Как будет работать:  
+How it will work:  
 - нужно не допустить создание циклов в графе https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph т.е. надо проверить, что не образуется цикл. Т.е. должен получиться https://en.wikipedia.org/wiki/Directed_acyclic_graph  
 - добавить связь в таблицу `tag_arrow`  
 - добавить связи в таблицу `bookmark_tag`: если букмарк имеет тег `{id}`, то добавить ему еще и тег `{parent_tag_id}` (и еще парентов этого парента и т.д.)
