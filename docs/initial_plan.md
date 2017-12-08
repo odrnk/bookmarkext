@@ -1,4 +1,4 @@
-## General idea and requirements
+# General idea and requirements
 
 - tags
 - tag inheritance. Обязательно множественная наследуемость, т.е., например, тег J.S.Bach относится и к тегу music и к тегу people; тег php относится и к тегу programming language и к тегу "зашквар".
@@ -11,9 +11,11 @@
 - синхронизация букмарков между разными браузерами
 - importing bookmarks from firefox
 
-## Model
+# Model
 
 ![model](./model.png)
+
+# API
 
 ## Create bookmark
 
@@ -149,3 +151,36 @@ todo: describe how searching/filtering will work
 - по нескольким тегам  
 - по тексту в тайтле  
 - 
+
+# UI
+## Flat mode
+
+This view looks pretty much the same as in firefox.
+
+We show a grid of all bookmarks with columns "Title", "Tags", "Url", "Descrption", "Added", "Most Recent Visit", "Last Modified", "Visit Count", "Snapshot". Before each title the favicon is shown.
+
+The grid is virtualized, i.e. it shows the limited amount of bookmarks and loads more when a user has scrolled to the bottom.
+
+"Tags" contains comma-separated list of all tags of the bookmark. "Snapshot" contains the link to the snapshot of the page.
+
+It must be possible to hide/show columns the same as in firefox:
+![show/hide columns](show_hide_columns.png)
+
+Except column names are different and "Title" column cannot be hidden. By default columns "Most Recent Visit", "Last Modified", "Visit Count" are hidden.
+
+When a bookmark is dbl-clicked, we open it in the current tab. When it is right-clicked, we show a context menu with the same options as in firefox.
+
+It must be possible to rearrange columns.
+
+Grid can be ordered by each column in desc/asc order. By default it is ordered by "Added" desc. It must be possible to order by multiple columns. In this case columns for ordering are taken from left to right and if the columns are rearranged, it affects ordering.
+
+The state of the grid must be persistent. It includes columns visibility, arrangement and ordering.
+
+When a bookmark is selected, it shows a form at the bottom. The form has the following fields (single line): "Title", "Url" and "Tags". But there must be button "More" below that adds "Descrption" field (multi-line).
+
+"Tags" field is a multiselect combobox. There must be a button on the right side which opens the list of all tags sorted by name (it must be virtualized, i.e. only a limited amount of items is loaded and it loads more on scrolling). When a user begins to type a tag name (at least one symbol is entered), the (virtualized) list of all tags that starts with this text is shows.
+
+Tags that are already added must be excluded from the suggestion list.
+
+## Hierarchy mode
+
