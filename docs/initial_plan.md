@@ -11,21 +11,35 @@
 - Synchronizing bookmarks between multiple different browsers.
 - Importing bookmarks from firefox.
 
+# Purpose
+
+- To improve user experience of working with bookmarks in a web browser.
+- To better learn some technologies and programming languages: WebExtenstions, WebSockets, PostgreSQL.
+
 # Model
 
 ![model](./model.png)
 
 # API
 
+We will use websockets and json-rpc.
+
+todo: rewrite everything in this section using json-rpc.
+
 ## Create bookmark
 
-```
-POST /api/bookmarks
+Request example:
+```json
 {
-  "url": "https://example.com/",
-  "title": "Example",
-  "description": "example",
-  "tags": ["tag1", "tag2"]
+  "jsonrpc": "2.0",
+  "method": "CreateBookmark",
+  "params": {
+    "url": "https://example.com/",
+    "title": "Example",
+    "description": "example",
+    "tags": ["tag1", "tag2"]
+  },
+  "id": 123
 }
 ```
 How it will work:
@@ -39,70 +53,177 @@ How it will work:
 It is assumed and expected that "tags" array already contains all of them, but we should check it anyway.
 - give `id` of the bookmark to a service that will asynchronously take a snapshot of the page and update `snapshot_url` of the bookmark
 - give `id` of the bookmark to a service that will asynchronously get (or find already exising) favicon and update `favicon_id` of the bookmark
+- return `id`
 
-## Relations between tags
+## Get all root tags
 
-Root tags are tags that have no parents in `tag_arrow` table.  
-Get all root tags:
-```
-GET /api/tags/roots
-```
-Get all children of the tag:
-```
-GET /api/tags/{id}/children
-```
-Get all parent tags of the tag:
-```
-GET /api/tags/{id}/parents
-```
-Get all bookmarks of the tag:
-```
-GET /api/tags/{id}/bookmarks
-```
-Get all root bookmarks (that have no tags):
-```
-GET /api/bookmarks/roots
-```
-This is all that is needed to navigate like in a  file system. The implementation of the requests is obvious.
+Root tags are tags that have no parents in `tag_arrow` table.
 
-Get tag's parents, grandparents and so on:
-```
-GET /api/tags/{id}/ascendants
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetRootTags",
+  "id": 10
+}
 ```
 
-To create a new parent-child relation between tags:
+## Get all children of the tag
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetChildTags",
+  "params": [<tag_id>]
+  "id": 11
+}
 ```
-POST /api/tags/{id}/parents/{parent_tag_id}
+
+## Get all parent tags of the tag
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetParentTags",
+  "params": [<tag_id>]
+  "id": 12
+}
 ```
-How it will work:  
-- we have to avoid creating a cycle in the graph https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph i.e. we need to check that we do not add a cycle. As a result it will be https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+## Get all bookmarks of the tag
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetBookmarksOfTag",
+  "params": [<tag_id>]
+  "id": 13
+}
+```
+
+## Get all root bookmarks
+
+Root bookmarks are ones that have no tags.
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetRootBookmarks",
+  "id": 14
+}
+```
+Note: At this point we have enough API to navigate like in a file system. The implementation of the requests is obvious.
+
+## Get tag's ascendants
+Ascendant tags of a tag are its parents, grandparents and so on.
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetAscendantTags",
+  "params": [<tag_id>]
+  "id": 15
+}
+```
+
+## Create a new parent-child relation between tags
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "SetParentTag",
+  "params": {
+    "tagId": <tag_id>,
+    "parentTagId": <parent_tag_id>
+  }
+  "id": 16
+}
+```
+How it will work:
+- we have to avoid creating a cycle in the graph - [Directed cycle graph](https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph) i.e. we need to check that we do not add a cycle. As a result it will be [Directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 - add the record into `tag_arrow` table
-- add the records into `bookmark_tag` table, i.e. for each bookmark if a bookmark has `{id}` tag, then add also `{parent_tag_id}` tag (and also its parenets, grandparents and so on)
+- add the records into `bookmark_tag` table, i.e. for each bookmark if it has `tagId` tag, then add also `parentTagId` tag and its ascendants
 
-To remove parent-child relation between tags:
-```
-DELETE /api/tags/{id}/parents/{parent_tag_id}
+Note: This method will be used when a new tag is created inside another and when a tag is copied and pasted into a new parent tag.
+
+## Remove parent-child relation between tags
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "UnsetParentTag",
+  "params": {
+    "tagId": <tag_id>,
+    "parentTagId": <parent_tag_id>
+  }
+  "id": 17
+}
 ```
 - delete the record from `tag_arrow` table
-- удалить связи в таблице `bookmark_tag`: если букмарк имеет и тег `{id}`, и тег `{parent_tag_id}`, то отвязать второй. И надо отвязать еще парентов этого парента и т.д. Но нельзя отвязывать других парентов, грандпарентов и т.д. тега `{id}`. Т.е. отвязать всех, кроме этих.
+- delete from `bookmark_tag` table all records where  `bookmark_id` is any of `tag_id`'s bookmarks and `tag_id` is `parentTagId` or any of its ascendants. (But do not untag other parents of `tagId`!)
+- delete `tagId` tag from `tag` table if it has no bookmarks and parents
+
+Note: this method will be used when a tag is unset from one of its parents, i.e. in the hierarchy mode.
+
+## Change some tag's parent to another
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "ResetParentTag",
+  "params": {
+    "tagId": <tag_id>,
+    "oldParentTagId": <old_parent_tag_id>,
+    "newParentTagId": <new_parent_tag_id>
+  }
+  "id": 16
+}
+```
+- compose `UnsetParentTag(tagId, oldParentTagId)` and `SetParentTag(tagId, newParentTagId)`
+
+Note: this method will be used when a tag is cut and pasted into a new parent tag.
+
+## Create a root tag
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "CreateTag",
+  "params": { "name": "tag's name" }
+  "id": 1
+}
+```
+- just insert a new record into `tag` table.
+
+## Create a tag inside another
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "CreateTag",
+  "params": {
+    "name": "tag's name",
+    "parentTag": <parent_tag_id>
+  }
+  "id": 2
+}
+```
+- insert a new record into `tag` table
+- insert a new record into `tag_arrow` table
 
 ## Delete bookmark
-
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "DeleteBookmark",
+  "params": [<bookmark_id>]
+  "id": 2
+}
 ```
-DELETE /api/bookmarks/{id}
-```
-- delete records from `bookmark_tag` table where `bookmark_id = {id}`
+- delete records from `bookmark_tag` table where `bookmark_id = <bookmark_id>`
 - delete the record from `bookmark` table
 
 ## Delete tag
-
-A tag can be deleted only when it has no bookmarks and no children.
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "DeleteTag",
+  "params": [<tag_id>]
+  "id": 2
+}
 ```
-DELETE /api/tags/{id}
-```
-- check that there are no records in `bookmark_tag` table with `tag_id = {id}`
-- check that there are no records in `tag_arrow` table with `parent_tag_id = {id}`
-- delete the record from `tag` table
+- delete all parent tags of the tag
+- delete all records from `bookmark_tag` table where `tag_id = {id}`
+- delete all bookmarks of the tag
 
 ## Edit bookmark
 ```
@@ -199,7 +320,7 @@ Tags that are already added must be excluded from the suggestion list.
 
 ## Hierarchy mode
 
-It is a grid that lists tags and bookmarks. Columns are the same as in the flat mode, except one more is added - "B.
+It is a grid that lists tags and bookmarks. Columns are the same as in the flat mode.
 Tags here are like directories in a file system. For tags, values in columns "Url", "Descrption", "Most Recent Visit", "Visit Count", "Snapshot" are empty; "Name" is the name of a tag and there should be the same icon before each tag name; "Tags" contains all parent tags of the tag.
 
 Tags are always grouped, i.e. the grid is always sorted by the type of entity first. Sorting functionality is the same as in the flat mode.
@@ -210,11 +331,15 @@ This grid also loads more items on srolling.
 At the root level, the grid contains all root tags and all not tagged bookmarks. 
 If a tag is dbl-clicked, it shows all its children tags and all bookmarks that have this tag.
 
-If a tag is right-clicked, it show a context menu with the following options: "**Open**", "Open all in tabs", "New Tag", "New Bookmark", "Cut", "Copy", "Paste", "Delete".
+If a tag is right-clicked, it show a context menu with the following options: "**Open**", "Open all in tabs", "New Tag", "New Bookmark", "Cut", "Copy", "Paste", "Unset", "Delete".
 
 If a tag is copied and pasted somewhere, it will  create a new parent tag for it and all its bookmarks will have this parent tag.
 
 If a tag is cut and pasted somewhere, it will no longer have its old parent and so its bookmarks.
 
-A tag will be completely deleted only if it has 0 or 1 parent and no bookmarks. Otherwise, only its relation with one of its parents will be deleted (which will affect its bookmarks accordingly.)
+In case of a tag, "Unset" means that the relation between the tag and the parent tag will be removed.
+In case of a bookmark, "Unset" means that it will no longer have the tag.
+
+In case of a bookmark, "Delete" means that it will be completely deleted.
+In case of a tag, "Delete" means that it will be completely deleted and all its bookmarks will be deleted. So it will propably make sense to show some confirmation popup to prevent accidental deletion of many bookmarks.
 
