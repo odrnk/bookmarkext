@@ -72,7 +72,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetChildTags",
-  "params": [<tag_id>]
+  "params": ["<tag_id>"]
   "id": 11
 }
 ```
@@ -82,7 +82,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetParentTags",
-  "params": [<tag_id>]
+  "params": ["<tag_id>"]
   "id": 12
 }
 ```
@@ -92,7 +92,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetBookmarksOfTag",
-  "params": [<tag_id>]
+  "params": ["<tag_id>"]
   "id": 13
 }
 ```
@@ -115,7 +115,7 @@ Ascendant tags of a tag are its parents, grandparents and so on.
 {
   "jsonrpc": "2.0",
   "method": "GetAscendantTags",
-  "params": [<tag_id>]
+  "params": ["<tag_id>"]
   "id": 15
 }
 ```
@@ -126,8 +126,8 @@ Ascendant tags of a tag are its parents, grandparents and so on.
   "jsonrpc": "2.0",
   "method": "SetParentTag",
   "params": {
-    "tagId": <tag_id>,
-    "parentTagId": <parent_tag_id>
+    "tagId": "<tag_id>",
+    "parentTagId": "<parent_tag_id>"
   }
   "id": 16
 }
@@ -145,8 +145,8 @@ Note: This method will be used when a new tag is created inside another and when
   "jsonrpc": "2.0",
   "method": "UnsetParentTag",
   "params": {
-    "tagId": <tag_id>,
-    "parentTagId": <parent_tag_id>
+    "tagId": "<tag_id>",
+    "parentTagId": "<parent_tag_id>"
   }
   "id": 17
 }
@@ -163,9 +163,9 @@ Note: this method will be used when a tag is unset from one of its parents, i.e.
   "jsonrpc": "2.0",
   "method": "ResetParentTag",
   "params": {
-    "tagId": <tag_id>,
-    "oldParentTagId": <old_parent_tag_id>,
-    "newParentTagId": <new_parent_tag_id>
+    "tagId": "<tag_id>",
+    "oldParentTagId": "<old_parent_tag_id>",
+    "newParentTagId": "<new_parent_tag_id>"
   }
   "id": 16
 }
@@ -192,7 +192,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
   "method": "CreateTag",
   "params": {
     "name": "tag's name",
-    "parentTag": <parent_tag_id>
+    "parentTag": "<parent_tag_id>"
   }
   "id": 2
 }
@@ -205,11 +205,11 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 {
   "jsonrpc": "2.0",
   "method": "DeleteBookmark",
-  "params": [<bookmark_id>]
+  "params": ["<bookmark_id>"]
   "id": 2
 }
 ```
-- delete records from `bookmark_tag` table where `bookmark_id = <bookmark_id>`
+- delete records from `bookmark_tag` table where `bookmark_id = "<bookmark_id>"`
 - delete the record from `bookmark` table
 
 ## Delete tag
@@ -217,12 +217,12 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 {
   "jsonrpc": "2.0",
   "method": "DeleteTag",
-  "params": [<tag_id>]
+  "params": ["<tag_id>"]
   "id": 2
 }
 ```
 - delete all parent tags of the tag
-- delete all records from `bookmark_tag` table where `tag_id = {id}`
+- delete all records from `bookmark_tag` table where `tag_id = "<tag_id>"`
 - delete all bookmarks of the tag
 
 ## Edit bookmark
