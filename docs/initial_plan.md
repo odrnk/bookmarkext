@@ -72,7 +72,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetChildTags",
-  "params": ["<tag_id>"]
+  "params": ["<tag_id>"],
   "id": 11
 }
 ```
@@ -82,7 +82,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetParentTags",
-  "params": ["<tag_id>"]
+  "params": ["<tag_id>"],
   "id": 12
 }
 ```
@@ -92,7 +92,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetBookmarksOfTag",
-  "params": ["<tag_id>"]
+  "params": ["<tag_id>"],
   "id": 13
 }
 ```
@@ -115,7 +115,7 @@ Ascendant tags of a tag are its parents, grandparents and so on.
 {
   "jsonrpc": "2.0",
   "method": "GetAscendantTags",
-  "params": ["<tag_id>"]
+  "params": ["<tag_id>"],
   "id": 15
 }
 ```
@@ -128,7 +128,7 @@ Ascendant tags of a tag are its parents, grandparents and so on.
   "params": {
     "tagId": "<tag_id>",
     "parentTagId": "<parent_tag_id>"
-  }
+  },
   "id": 16
 }
 ```
@@ -147,7 +147,7 @@ Note: This method will be used when a new tag is created inside another and when
   "params": {
     "tagId": "<tag_id>",
     "parentTagId": "<parent_tag_id>"
-  }
+  },
   "id": 17
 }
 ```
@@ -166,7 +166,7 @@ Note: this method will be used when a tag is unset from one of its parents, i.e.
     "tagId": "<tag_id>",
     "oldParentTagId": "<old_parent_tag_id>",
     "newParentTagId": "<new_parent_tag_id>"
-  }
+  },
   "id": 16
 }
 ```
@@ -179,7 +179,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 {
   "jsonrpc": "2.0",
   "method": "CreateTag",
-  "params": { "name": "tag's name" }
+  "params": { "name": "tag's name" },
   "id": 1
 }
 ```
@@ -205,7 +205,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 {
   "jsonrpc": "2.0",
   "method": "DeleteBookmark",
-  "params": ["<bookmark_id>"]
+  "params": ["<bookmark_id>"],
   "id": 2
 }
 ```
@@ -217,7 +217,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 {
   "jsonrpc": "2.0",
   "method": "DeleteTag",
-  "params": ["<tag_id>"]
+  "params": ["<tag_id>"],
   "id": 2
 }
 ```
@@ -314,9 +314,9 @@ When a bookmark is selected, it shows a form at the bottom. The form has the fol
 
 "Tags" field is a multiselect combobox. There must be a button on the right side which opens the list of all tags sorted by name (it must be virtualized, i.e. only a limited amount of items is loaded and it loads more on scrolling). When a user begins to type a tag name (at least one symbol is entered), the (virtualized) list of all tags that starts with this text is shows.
 
-After a tag has been added, its parents (and grandparents and so on) are loaded and they must be shown below the combobox as "_derived:_ ptag1, ptag2, ptag3". If later the user adds one of these parent tags manually, it will disappear from "_derived_" list.
+After a tag has been added, its parents (and grandparents and so on) are loaded and they must be shown below the combobox as "_derived:_ ptag1, ptag2, ptag3".
 
-Tags that are already added must be excluded from the suggestion list.
+Tags that are already added must be excluded from the suggestion list. Derived tags also must be excluded.
 
 ## Hierarchy mode
 
@@ -342,4 +342,20 @@ In case of a bookmark, "Unset" means that it will no longer have the tag.
 
 In case of a bookmark, "Delete" means that it will be completely deleted.
 In case of a tag, "Delete" means that it will be completely deleted and all its bookmarks will be deleted. So it will propably make sense to show some confirmation popup to prevent accidental deletion of many bookmarks.
+
+Editing of bookmarks must work the same way as in the flat mode, except that if a current tag is removed for the bookmark, it must disappear from the grid after selecting a tag or another bookmark in the grid.
+
+For tags, the editing form have only "Name" and "Tags" fields. "Tags" field must work the same way as "Tags" field for bookamarks.
+
+## Tree view
+
+There will be a tree of tags on the left in each mode. The first node will be "flat mode" and has no child nodes. When it is clicked, the user see the flat mode. The second node will be "root". When it is clicked the user see the hierarchy mode at the root level.
+
+The child nodes of "root" are the root tags. The child nodes of root tags are thier child tags and so on, you got the idea.
+
+Be default, "root" node is expanded.
+
+When a tag is clicked in the tree, the user sees the hierarchy mode at the level of this tag.
+
+The separation line between the tree and a grid must be adjustable horizontally.
 
