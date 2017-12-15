@@ -13,8 +13,8 @@
 
 # Purpose
 
-- To improve user experience of working with bookmarks in a web browser.
-- To better learn some technologies and programming languages: WebExtenstions, WebSockets, PostgreSQL.
+- Improve user experience of working with bookmarks in a web browser.
+- Better learn some technologies and programming languages: WebExtenstions, WebSockets, PostgreSQL, Haskell.
 
 # Model
 
@@ -37,6 +37,8 @@ Request example:
     "url": "https://example.com/",
     "title": "Example",
     "description": "example",
+    "visit_date": 123123123,
+    "visit_count": 1,
     "tags": ["tag1", "tag2"]
   },
   "id": 123
@@ -54,6 +56,8 @@ It is assumed and expected that "tags" array already contains all of them, but w
 - give `id` of the bookmark to a service that will asynchronously take a snapshot of the page and update `snapshot_url` of the bookmark
 - give `id` of the bookmark to a service that will asynchronously get (or find already exising) favicon and update `favicon_id` of the bookmark
 - return `id`
+
+Note: use [HistoryItem](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/history/HistoryItem) to get `last_visit_date` and `visit_count`.
 
 ## Get all root tags
 
@@ -193,7 +197,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
   "params": {
     "name": "tag's name",
     "parentTag": "<parent_tag_id>"
-  }
+  },
   "id": 2
 }
 ```
@@ -241,7 +245,8 @@ PATCH /api/bookmarks/{id}
 
 ## Update bookmark's visit info
 
-I hope it is possible for web extensions to  specify some function that will be called every time a url is visited.
+I hope it is possible for web extensions to  specify some function that will be called every time a url is visited.  
+Upd: it is definitely possible, use [onVisited](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/history/onVisited).
 ```
 POST /api/visits
 {
