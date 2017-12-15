@@ -130,7 +130,7 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- object: fk_bookmark_tag_tag_id | type: CONSTRAINT --
 -- ALTER TABLE bm.bookmark_tag DROP CONSTRAINT IF EXISTS fk_bookmark_tag_tag_id CASCADE;
-ALTER TABLE bm.bookmark_tag ADD CONSTRAINT fk_bookmark_tag_tag_id FOREIGN KEY (bookmark_id)
+ALTER TABLE bm.bookmark_tag ADD CONSTRAINT fk_bookmark_tag_tag_id FOREIGN KEY (tag_id)
 REFERENCES bm.tag (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --

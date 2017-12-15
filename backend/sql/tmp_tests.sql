@@ -30,3 +30,6 @@ select bm.create_bookmark('http://example.com', 'example title', '', 1::smallint
 delete from bm.bookmark_tag bt where bt.tag_id in (select t.Id from bm.tag t where t.name in ('tag a', 'asdf'));
 delete from bm.tag where name = 'asdf';
 delete from bm.bookmark where title = 'example title';
+
+select id, snapshot_url from bm.bookmark;
+select bm.update_snapshot_url('e58e0230-e1e8-11e7-94d1-6b2f80fe41a2', 'http://snapshot_url/text');
