@@ -1,5 +1,5 @@
 ﻿CREATE OR REPLACE FUNCTION bm.create_bookmark(
-    url text, title text, description text, visit_count smallint, last_visit_date timestamp, tags text[]) 
+    url text, title text, description text, visit_count smallint, last_visit_date timestamp, tags text[])
 RETURNS uuid AS $$
 declare
     tags_to_create text[];

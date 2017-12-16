@@ -54,7 +54,7 @@ How it will work:
 - start a background async task that for each tag finds all its parents, grandparents and so on and inserts them into `bookmark_tag` table.  
 It is assumed and expected that "tags" array already contains all of them, but we should check it anyway.
 - give `id` of the bookmark to a service that will asynchronously take a snapshot of the page and update `snapshot_url` of the bookmark
-- give `id` of the bookmark to a service that will asynchronously get (or find already exising) favicon and update `favicon_id` of the bookmark
+- give `id` and `url` of the bookmark to a service that will asynchronously get (or find already exising) favicon and update `favicon_id` of the bookmark
 - return `id`
 
 Note: use [HistoryItem](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/history/HistoryItem) to get `last_visit_date` and `visit_count`.

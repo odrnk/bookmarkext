@@ -1,6 +1,6 @@
 -- Database generated with pgModeler (PostgreSQL Database Modeler).
 -- pgModeler  version: 0.9.0
--- PostgreSQL version: 9.2
+-- PostgreSQL version: 9.6
 -- Project Site: pgmodeler.com.br
 -- Model Author: ---
 
@@ -52,7 +52,9 @@ CREATE TABLE bm.favicon(
 	data bytea NOT NULL,
 	date_added timestamp NOT NULL DEFAULT (now() at time zone 'utc'),
 	date_modified timestamp NOT NULL DEFAULT (now() at time zone 'utc'),
-	CONSTRAINT favicon_pk PRIMARY KEY (id)
+	checksum text NOT NULL,
+	CONSTRAINT favicon_pk PRIMARY KEY (id),
+	CONSTRAINT ak_favicon_checksum UNIQUE (checksum)
 
 );
 -- ddl-end --
