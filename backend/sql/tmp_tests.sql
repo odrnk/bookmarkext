@@ -72,32 +72,6 @@ delete from bm.bookmark where title = 'haskell title';
 
 
 
--- for each tag of the bookmark find all its ascendants
--- and insert them into `bookmark_tag` table if they are not there yet
-CREATE OR REPLACE FUNCTION bm.fix_bookmark_tags(bookmark_id uuid)
-RETURNS void AS $$
-#variable_conflict use_variable
-BEGIN
-    with recursive ascendants as (
-        select ta.parent_tag_id
-        from bm.bookmark_tag bt
-        inner join bm.tag_arrow ta on ta.tag_id = bt.tag_id
-        where bt.bookmark_id = bookmark_id
-        union
-        select ta.parent_tag_id
-        from bm.tag_arrow ta
-        inner join ascendants a on a.parent_tag_id = ta.tag_id
-    )
-    insert into bm.bookmark_tag(bookmark_id, tag_id)
-    select bookmark_id, a.parent_tag_id
-    from ascendants a
-    where a.parent_tag_id not in (
-        select bt.tag_id 
-        from bm.bookmark_tag bt 
-        where bt.bookmark_id = bookmark_id);
-END;
-$$ LANGUAGE plpgsql;
-
 -- test fix_bookmark_tags
 select bm.fix_bookmark_tags('29a742f8-e264-11e7-a19c-cbd5778cd6df');
 
@@ -113,13 +87,22 @@ delete from bm.bookmark_tag where tag_id in ('34ae52fa-e263-11e7-a199-e722cd250b
 
 
 
-
-
-
 -- test bm.update_favicon
 select bm.update_favicon('29a742f8-e264-11e7-a19c-cbd5778cd6df', E'Th\\000omas'::bytea);
 select * from bm.favicon;
 select md5(E'Th\\000omas'::bytea);
+
+
+
+--test bm.root_tag
+select * from bm.root_tag rt
+order by rt.name asc, rt.date_added desc
+limit 20 offset 1;
+
+
+
+-- test bm.get_bookmarks_of_tag
+select * from bm.get_bookmarks_of_tag('34ae2bea-e263-11e7-a198-1ffbe6aa0449')
 
 
 

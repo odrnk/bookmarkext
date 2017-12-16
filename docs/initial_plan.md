@@ -67,6 +67,14 @@ Root tags are tags that have no parents in `tag_arrow` table.
 {
   "jsonrpc": "2.0",
   "method": "GetRootTags",
+  "params": {
+    "skip": 1150,
+    "take": 50,
+    "sort": [
+      { "name": "asc"},
+      { "date_added": "desc" }
+    ]
+  },
   "id": 10
 }
 ```

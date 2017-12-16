@@ -13,7 +13,7 @@ BEGIN
     if favicon_id is null then
         favicon_id := bm.generate_id();
         insert into bm.favicon(id, data, checksum)
-        values (favicon_id, favicon_data, md5(favicon_data));
+        values (favicon_id, favicon_data, checksum);
     end if;
 
     update bm.bookmark
