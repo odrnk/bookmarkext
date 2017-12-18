@@ -90,6 +90,7 @@ Root tags are tags that have no parents in `tag_arrow` table.
 ```
 
 ## Get all parent tags of the tag
+Upd: This method probably won't be needed.
 ```json
 {
   "jsonrpc": "2.0",
@@ -131,6 +132,7 @@ Ascendant tags of a tag are its parents, grandparents and so on.
   "id": 15
 }
 ```
+Note: thid method will be used for the tag combobox.
 
 ## Create a new parent-child relation between tags
 ```json
@@ -150,6 +152,7 @@ How it will work:
 - add the records into `bookmark_tag` table, i.e. for each bookmark if it has `tagId` tag, then add also `parentTagId` tag and its ascendants
 
 Note: This method will be used when a new tag is created inside another and when a tag is copied and pasted into a new parent tag.
+Todo: it should not be used for tag creation. Create a separate method for that.
 
 ## Remove parent-child relation between tags
 ```json

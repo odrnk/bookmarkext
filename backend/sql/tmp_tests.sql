@@ -100,10 +100,50 @@ order by rt.name asc, rt.date_added desc
 limit 20 offset 1;
 
 
-
 -- test bm.get_bookmarks_of_tag
-select * from bm.get_bookmarks_of_tag('34ae2bea-e263-11e7-a198-1ffbe6aa0449')
+select * from bm.get_bookmarks_of_tag('34ae2bea-e263-11e7-a198-1ffbe6aa0449');
 
+
+
+
+
+select * from bm.tag
+
+-- test bm.get_child_tags
+select * from bm.get_child_tags('34ae7a0a-e263-11e7-a19a-6746008cb44a');
+
+
+
+
+
+-- create a root bookmark
+select bm.create_bookmark('http://root.com', 'root title', '', 1::smallint, bm.get_utc_now(), array[]::text[]);
+--'38bfef0e-e423-11e7-b589-6767f35bea96'
+
+--test bm.root_bookmark
+select * from bm.root_bookmark
+
+
+
+
+
+-- test bm.get_ascendant_tags()
+select * from bm.tag t
+select * from bm.get_ascendant_tags('34adb6ba-e263-11e7-a197-5b7f85a61983');
+
+
+
+
+
+
+
+
+
+-- test bm.check_tag_arrow
+select * from bm.tag
+select * from bm.check_tag_arrow('34ad8fa0-e263-11e7-a196-6fae0a5ad98a', '34ae7a0a-e263-11e7-a19a-6746008cb44a');
+select * from bm.check_tag_arrow('34ad8fa0-e263-11e7-a196-6fae0a5ad98a', '6ac4bdc2-e26b-11e7-a19d-eb51d267e1cc');
+select * from bm.check_tag_arrow('34adb6ba-e263-11e7-a197-5b7f85a61983', '6ac4bdc2-e26b-11e7-a19d-eb51d267e1cc');
 
 
 

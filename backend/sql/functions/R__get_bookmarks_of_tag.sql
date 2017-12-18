@@ -5,7 +5,9 @@ RETURNS TABLE(
     date_modified timestamp, favicon_data bytea, tags jsonb
     ) AS
 $$
-    with bookmarks_of_tag AS (
+#variable_conflict use_variable
+BEGIN
+    return QUERY with bookmarks_of_tag AS (
         SELECT bt.bookmark_id as id
         from bm.bookmark_tag bt
         where bt.tag_id = tag_id
@@ -25,6 +27,6 @@ $$
         fa.data as favicon_data, bwt.tags
     from bm.bookmark b
     inner join bookmarks_with_tags bwt on bwt.id = b.id
-    left join bm.favicon fa on fa.id = b.favicon_id
-$$
-LANGUAGE SQL STABLE;
+    left join bm.favicon fa on fa.id = b.favicon_id;
+END;
+$$ LANGUAGE plpgsql STABLE;
