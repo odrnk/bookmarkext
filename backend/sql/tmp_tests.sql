@@ -16,20 +16,6 @@ inner join bm.tag pt on pt.id = ta.parent_tag_id
 
 
 
-
-
--- test
-select bm.create_bookmark('http://example.com', 'example title', '', 1::smallint, bm.get_utc_now(), array['tag a','asdf']);
--- clear
-delete from bm.bookmark_tag bt where bt.tag_id in (select t.Id from bm.tag t where t.name in ('tag a', 'asdf'));
-delete from bm.tag where name in ('tag a', 'asdf');
-delete from bm.bookmark where title = 'example title';
-
-select id, snapshot_url from bm.bookmark;
-select bm.update_snapshot_url('e58e0230-e1e8-11e7-94d1-6b2f80fe41a2', 'http://snapshot_url/text');
-
-
-
 -- 'programming' <- 'programming language' <- 'php','haskell'
 -- 'programming' <- 'functional programming' <- 'haskell'
 insert into bm.tag(id, name)
@@ -104,16 +90,8 @@ limit 20 offset 1;
 select * from bm.get_bookmarks_of_tag('34ae2bea-e263-11e7-a198-1ffbe6aa0449');
 
 
-
-
-
-select * from bm.tag
-
 -- test bm.get_child_tags
 select * from bm.get_child_tags('34ae7a0a-e263-11e7-a19a-6746008cb44a');
-
-
-
 
 
 -- create a root bookmark
@@ -124,19 +102,9 @@ select bm.create_bookmark('http://root.com', 'root title', '', 1::smallint, bm.g
 select * from bm.root_bookmark
 
 
-
-
-
 -- test bm.get_ascendant_tags()
 select * from bm.tag t
 select * from bm.get_ascendant_tags('34adb6ba-e263-11e7-a197-5b7f85a61983');
-
-
-
-
-
-
-
 
 
 -- test bm.check_tag_arrow
@@ -145,5 +113,13 @@ select * from bm.check_tag_arrow('34ad8fa0-e263-11e7-a196-6fae0a5ad98a', '34ae7a
 select * from bm.check_tag_arrow('34ad8fa0-e263-11e7-a196-6fae0a5ad98a', '6ac4bdc2-e26b-11e7-a19d-eb51d267e1cc');
 select * from bm.check_tag_arrow('34adb6ba-e263-11e7-a197-5b7f85a61983', '6ac4bdc2-e26b-11e7-a19d-eb51d267e1cc');
 
+
+
+
+
+BEGIN TRANSACTION;
+--SELECT * FROM unit_tests.create_bookmark_no_tags(); 
+SELECT * FROM unit_tests.begin();
+ROLLBACK TRANSACTION;
 
 

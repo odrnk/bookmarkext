@@ -154,6 +154,9 @@ How it will work:
 Note: This method will be used when a new tag is created inside another and when a tag is copied and pasted into a new parent tag.
 Todo: it should not be used for tag creation. Create a separate method for that.
 
+Upd: this method should also be used if one of them (or both) is a root tag.
+Хотя нет, скорее в создание. подумать еще раз. Поправить в ui текст: нельзя скопировать root tag его можно только переместить.
+
 ## Remove parent-child relation between tags
 ```json
 {
