@@ -151,11 +151,7 @@ How it will work:
 - add the record into `tag_arrow` table
 - add the records into `bookmark_tag` table, i.e. for each bookmark if it has `tagId` tag, then add also `parentTagId` tag and its ascendants
 
-Note: This method will be used when a new tag is created inside another and when a tag is copied and pasted into a new parent tag.
-Todo: it should not be used for tag creation. Create a separate method for that.
-
-Upd: this method should also be used if one of them (or both) is a root tag.
-Хотя нет, скорее в создание. подумать еще раз. Поправить в ui текст: нельзя скопировать root tag его можно только переместить.
+Note: This method will be used when a tag is copied and pasted into a new parent tag.
 
 ## Remove parent-child relation between tags
 ```json
@@ -170,8 +166,7 @@ Upd: this method should also be used if one of them (or both) is a root tag.
 }
 ```
 - delete the record from `tag_arrow` table
-- delete from `bookmark_tag` table all records where  `bookmark_id` is any of `tag_id`'s bookmarks and `tag_id` is `parentTagId` or any of its ascendants. (But do not untag other parents of `tagId`!)
-- delete `tagId` tag from `tag` table if it has no bookmarks and parents
+- delete from `bookmark_tag` table all records where `bookmark_id` is any of `tagId`'s bookmarks and `tag_id` is `parentTagId` or any of its ascendants. (But do not untag other parents of `tagId`!)
 
 Note: this method will be used when a tag is unset from one of its parents, i.e. in the hierarchy mode.
 
@@ -196,7 +191,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "CreateTag",
+  "method": "CreateRootTag",
   "params": { "name": "tag's name" },
   "id": 1
 }
@@ -350,9 +345,11 @@ This grid also loads more items on srolling.
 At the root level, the grid contains all root tags and all not tagged bookmarks. 
 If a tag is dbl-clicked, it shows all its children tags and all bookmarks that have this tag.
 
-If a tag is right-clicked, it show a context menu with the following options: "**Open**", "Open all in tabs", "New Tag", "New Bookmark", "Cut", "Copy", "Paste", "Unset", "Delete".
+If a tag is right-clicked, it show a context menu with the following options: "**Open**", "Open all in tabs", "New Tag", "New Bookmark", "Cut", "Copy" (disabled for root tags), "Paste", "Unset", "Delete".
 
 If a tag is copied and pasted somewhere, it will  create a new parent tag for it and all its bookmarks will have this parent tag.
+
+A root tag cannot be copied and pasted into another tag. It can only be moved (cut & pasted).
 
 If a tag is cut and pasted somewhere, it will no longer have its old parent and so its bookmarks.
 

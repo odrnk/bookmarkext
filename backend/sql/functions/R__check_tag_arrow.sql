@@ -14,4 +14,4 @@ BEGIN
             select 1 from bm.get_ascendant_tags(tag_id) a
             where a.id = parent_tag_id);
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql STABLE;

@@ -117,9 +117,11 @@ select * from bm.check_tag_arrow('34adb6ba-e263-11e7-a197-5b7f85a61983', '6ac4bd
 
 
 
+
+
+
+
 BEGIN TRANSACTION;
---SELECT * FROM unit_tests.create_bookmark_no_tags(); 
+--SELECT * FROM unit_tests.create_root_tag(); 
 SELECT * FROM unit_tests.begin();
 ROLLBACK TRANSACTION;
-
-
