@@ -22,7 +22,7 @@
 
 # API
 
-We will use websockets and json-rpc.
+We will use websockets and [json-rpc 2.0](http://www.jsonrpc.org/specification).
 
 todo: rewrite everything in this section using json-rpc.
 
@@ -239,13 +239,18 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 - delete all bookmarks of the tag
 
 ## Edit bookmark
-```
-PATCH /api/bookmarks/{id}
+```json
 {
-  "url": "https://example.com/",
-  "title": "Example",
-  "description": "example",
-  "tags": ["tag1", "tag2"]
+  "jsonrpc": "2.0",
+  "method": "EditBookmark",
+  "params": {
+    "bookmarkId": "<id>",
+    "url": "https://example.com/",
+    "title": "Example",
+    "description": "example",
+    "tags": ["tag1", "tag2"]
+  },
+  "id": 3
 }
 ```
 - if `url` is present, check if it is valid
@@ -254,7 +259,7 @@ PATCH /api/bookmarks/{id}
 
 ## Update bookmark's visit info
 
-I hope it is possible for web extensions to  specify some function that will be called every time a url is visited.  
+I hope it is possible for web extensions to specify some function that will be called every time a url is visited.  
 Upd: it is definitely possible, use [onVisited](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/history/onVisited).
 ```
 POST /api/visits
@@ -298,10 +303,14 @@ todo: describe how searching/filtering will work
 поиск:  
 - по нескольким тегам  
 - по тексту в тайтле  
-- 
+- я еще не подумал про bulk delete букмарков/тегов
+  и про балк копи\кат анд пейст
 
 # UI
-## Flat mode
+
+The view is split into three parts: tags tree, tags grid, bookmarks grid.
+
+## Flat mode / bookmarks grid
 
 This view looks pretty much the same as in firefox.
 
@@ -332,6 +341,32 @@ After a tag has been added, its parents (and grandparents and so on) are loaded 
 
 Tags that are already added must be excluded from the suggestion list. Derived tags also must be excluded.
 
+## Tags grid
+It is a grid that lists tags. Columns are "Name", "Tags" and "Added". "Name" is the name of the tag and there should be the same icon before each tag name. "Tags" contains all parent tags of the tag.
+
+The grid is sorted by "Name" by default.
+Sorting functionality is the same as in the bookmarks grid. 
+Also there is the same show/hide feature. "Added" is hidden by default.
+
+This grid also loads more items on srolling.
+
+At the root level, the grid contains all root tags. 
+If a tag is dbl-clicked, it shows all its children tags and all bookmarks that have this tag.
+
+If a tag is right-clicked, it shows a context menu with the following options: "**Open**", "Open all in tabs", "New Tag", "New Bookmark", "Cut", "Copy" (disabled for root tags), "Paste", "Unset" (disabled for root tags), "Delete".
+
+If a tag is copied and pasted somewhere, it will set a new parent tag for it and all its bookmarks will have this parent tag.
+
+A root tag cannot be copied and pasted into another tag. It can only be moved (cut & pasted).
+
+If a tag is cut and pasted somewhere, it will no longer have its old parent and so its bookmarks.
+
+"Unset" means that the relation between the tag and the parent tag will be removed.
+
+"Delete" means that the tag will be completely deleted and all its bookmarks will be deleted. So it will propably make sense to show some confirmation popup to prevent accidental deletion of many bookmarks.
+
+For tags, the editing form have only "Name" and "Tags" fields. "Tags" field must work the same way as "Tags" field for bookamarks.
+
 ## Hierarchy mode
 
 It is a grid that lists tags and bookmarks. Columns are the same as in the flat mode.
@@ -343,29 +378,16 @@ Also there is the same show/hide feature. Click/dbl-click/rigt-click on a bookma
 This grid also loads more items on srolling.
 
 At the root level, the grid contains all root tags and all not tagged bookmarks. 
-If a tag is dbl-clicked, it shows all its children tags and all bookmarks that have this tag.
 
-If a tag is right-clicked, it show a context menu with the following options: "**Open**", "Open all in tabs", "New Tag", "New Bookmark", "Cut", "Copy" (disabled for root tags), "Paste", "Unset", "Delete".
-
-If a tag is copied and pasted somewhere, it will  create a new parent tag for it and all its bookmarks will have this parent tag.
-
-A root tag cannot be copied and pasted into another tag. It can only be moved (cut & pasted).
-
-If a tag is cut and pasted somewhere, it will no longer have its old parent and so its bookmarks.
-
-In case of a tag, "Unset" means that the relation between the tag and the parent tag will be removed.
 In case of a bookmark, "Unset" means that it will no longer have the tag.
 
 In case of a bookmark, "Delete" means that it will be completely deleted.
-In case of a tag, "Delete" means that it will be completely deleted and all its bookmarks will be deleted. So it will propably make sense to show some confirmation popup to prevent accidental deletion of many bookmarks.
 
 Editing of bookmarks must work the same way as in the flat mode, except that if a current tag is removed for the bookmark, it must disappear from the grid after selecting a tag or another bookmark in the grid.
 
-For tags, the editing form have only "Name" and "Tags" fields. "Tags" field must work the same way as "Tags" field for bookamarks.
+## Tags tree
 
-## Tree view
-
-There will be a tree of tags on the left in each mode. The first node will be "flat mode" and has no child nodes. When it is clicked, the user see the flat mode. The second node will be "root". When it is clicked the user see the hierarchy mode at the root level.
+There will be a tree of tags on the left. The first node will be "flat mode" and has no child nodes. When it is clicked, the user see the flat mode. The second node will be "root". When it is clicked the user see the hierarchy mode at the root level.
 
 The child nodes of "root" are the root tags. The child nodes of root tags are thier child tags and so on, you got the idea.
 
