@@ -6,7 +6,8 @@ BEGIN
     update bm.bookmark
     set url = url,
         title = title,
-        description = description
+        description = description,
+        date_modified = bm.get_utc_now()
     where id = bookmark_id;
 
     delete from bm.bookmark_tag bt

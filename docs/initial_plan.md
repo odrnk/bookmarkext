@@ -261,27 +261,67 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 
 I hope it is possible for web extensions to specify some function that will be called every time a url is visited.  
 Upd: it is definitely possible, use [onVisited](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/history/onVisited).
-```
-POST /api/visits
+```json
 {
-  "url": "https://example.com/",
-  "visit_date": 123123123
+  "jsonrpc": "2.0",
+  "method": "UpdateVisitInfo",
+  "params": {
+    "url": "https://example.com/",
+    "last_visit_date": 123123123,
+    "visit_count": 42
+  },
+  "id": 3
 }
 ```
 - check that `url` is present
-- check that `visit_date` is present and it is a valid timestamp, and it is not older that one minute from now
+- check that `last_visit_date` is present and it is a valid timestamp, and it is not older that one minute from now
 - find the bookmark with such `url`
-- update bookmark's `last_visit_date` to `visit_date` and increment `visit_count`
+- update bookmark's `last_visit_date` and `visit_count`
 
 ## Simple get requests
 
 Get the bookmark by `id`:
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetBookmarkById",
+  "params": ["<bookmark_id>"]
+  },
+  "id": 3
+}
 ```
-GET /api/bookmarks/{id}
+
+Get the bookmark by `url`:
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetBookmarkByUrl",
+  "params": ["<url>"]
+  },
+  "id": 3
+}
 ```
+
 Get the tag by `id`:
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetTagById",
+  "params": ["<tag_id>"]
+  },
+  "id": 3
+}
 ```
-GET /api/tags/{id}
+
+Get the tag by `name`:
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetTagByName",
+  "params": ["<tag_name>"]
+  },
+  "id": 3
+}
 ```
 
 ## Sort
@@ -290,7 +330,7 @@ Sort by multiple fields ("-" means DESCENDING):
 ```
 GET /api/bookmarks?sort=-date_added,visit_count
 ```
-It should also work for all other requests that return lists.
+It should also work for all other requests that return collections.
 
 ## Offset and limit for lists
 
