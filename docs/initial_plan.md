@@ -111,7 +111,6 @@ Upd: This method probably won't be needed.
 ```
 
 ## Get all root bookmarks
-
 Root bookmarks are ones that have no tags.
 ```json
 {
@@ -121,6 +120,16 @@ Root bookmarks are ones that have no tags.
 }
 ```
 Note: At this point we have enough API to navigate like in a file system. The implementation of the requests is obvious.
+
+## Get all bookmarks
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetBookmarks",
+  "id": 14
+}
+```
+Note: it will be used for the flat mode.
 
 ## Get tag's ascendants
 Ascendant tags of a tag are its parents, grandparents and so on.
@@ -278,59 +287,41 @@ Upd: it is definitely possible, use [onVisited](https://developer.mozilla.org/en
 - find the bookmark with such `url`
 - update bookmark's `last_visit_date` and `visit_count`
 
-## Simple get requests
-
-Get the bookmark by `id`:
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "GetBookmarkById",
-  "params": ["<bookmark_id>"]
-  },
-  "id": 3
-}
-```
-
-Get the bookmark by `url`:
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "GetBookmarkByUrl",
-  "params": ["<url>"]
-  },
-  "id": 3
-}
-```
-
-Get the tag by `id`:
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "GetTagById",
-  "params": ["<tag_id>"]
-  },
-  "id": 3
-}
-```
-
-Get the tag by `name`:
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "GetTagByName",
-  "params": ["<tag_name>"]
-  },
-  "id": 3
-}
-```
-
 ## Sort
 
 Sort by multiple fields ("-" means DESCENDING):
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "<method_that_returns_collection>",
+  "params": {
+    // ... method params
+    "sort": [
+      {
+        "<column_name>": "asc" // or "desc"
+      },
+      // ... other columns
+    ]
+  },
+  "id": 3
+}
 ```
-GET /api/bookmarks?sort=-date_added,visit_count
+It should work for all methods that return collections.
+Example:
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "GetBookmarksOfTag",
+  "params": {
+    "tagId": "<tag_id>",
+    "sort": [
+      { "date_added": "desc" },
+      { "visit_count": "asc" }
+    ]
+  },
+  "id": 13
+}
 ```
-It should also work for all other requests that return collections.
 
 ## Offset and limit for lists
 
