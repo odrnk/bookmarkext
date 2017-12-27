@@ -290,7 +290,7 @@ Upd: it is definitely possible, use [onVisited](https://developer.mozilla.org/en
 ## Sort
 
 Sort by multiple fields ("-" means DESCENDING):
-```json
+```js
 {
   "jsonrpc": "2.0",
   "method": "<method_that_returns_collection>",
