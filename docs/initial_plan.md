@@ -289,7 +289,7 @@ Upd: it is definitely possible, use [onVisited](https://developer.mozilla.org/en
 
 ## Sort
 
-Sort by multiple fields ("-" means DESCENDING):
+Sort by multiple fields:
 ```js
 {
   "jsonrpc": "2.0",
@@ -306,7 +306,7 @@ Sort by multiple fields ("-" means DESCENDING):
   "id": 3
 }
 ```
-It should work for all methods that return collections.
+It should work for all methods that return collections.  
 Example:
 ```json
 {
