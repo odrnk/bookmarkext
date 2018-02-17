@@ -27,3 +27,13 @@ BEGIN TRANSACTION;
 SELECT * FROM unit_tests.begin();
 ROLLBACK TRANSACTION;
 ```
+
+## Backend config
+To configure the backend, create `backend.cfg` file.  
+If you have custom database name, port, password, then you can specify these values in the config, e.g.:
+```ini
+dbpassword = "UifrxYfL3i5ZNDw8Ce3p"
+dbport = 25432
+dbname = "bookmarkext"
+```
+If you do not provide the values, by default the backend assumes that the password is an empty string, the port is `5432` and the database name is `bm`.

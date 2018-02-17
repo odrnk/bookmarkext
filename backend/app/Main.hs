@@ -1,6 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Lib
+import DBI
+import Data.UUID (UUID, fromString)
+import Database.PostgreSQL.Simple
+import Database.PostgreSQL.Simple.FromRow
+import Database.PostgreSQL.Simple.FromField
 
 main :: IO ()
-main = someFunc
+main = do
+    print "asdf"

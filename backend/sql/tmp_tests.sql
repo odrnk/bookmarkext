@@ -6,7 +6,7 @@
 -- where t.Id is null
 
 select t.name, t.Id from bm.tag t;
-select b.title, b.Id from bm.bookmark b;
+select b.title, b.url, b.Id from bm.bookmark b;
 
 SELECT 
   t.name, pt.name
@@ -273,8 +273,10 @@ end if;
 end $tests$;
 */
 
-
-
+select * from bm.tag
+select * from bm.get_child_tags('34ae2bea-e263-11e7-a198-1ffbe6aa0449')
+select * from bm.root_tag offset 1 limit 2;
+ ('34ae2bea-e263-11e7-a198-1ffbe6aa0449')
 
 
 BEGIN TRANSACTION;
@@ -283,3 +285,4 @@ SELECT * FROM unit_tests.begin();
 ROLLBACK TRANSACTION;
 
 
+delete from bm.bookmark where id = '318a1976-0c46-11e8-92a1-974404216d84'

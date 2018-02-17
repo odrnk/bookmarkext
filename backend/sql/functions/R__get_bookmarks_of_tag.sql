@@ -26,7 +26,7 @@ BEGIN
         b.date_added, b.date_modified,
         fa.data as favicon_data, coalesce(bwt.tags, '[]'::jsonb) as tags
     from bm.bookmark b
-    left join bookmarks_with_tags bwt on bwt.id = b.id
+    inner join bookmarks_with_tags bwt on bwt.id = b.id
     left join bm.favicon fa on fa.id = b.favicon_id;
 END;
 $$ LANGUAGE plpgsql STABLE;
