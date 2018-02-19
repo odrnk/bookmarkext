@@ -214,7 +214,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
   "method": "CreateTag",
   "params": {
     "name": "tag's name",
-    "parentTag": "<parent_tag_id>"
+    "parentTagId": "<parent_tag_id>"
   },
   "id": 2
 }
@@ -244,6 +244,7 @@ Note: this method will be used when a tag is cut and pasted into a new parent ta
 }
 ```
 - delete all parent tags of the tag
+- delete all child tags of the tag
 - delete all records from `bookmark_tag` table where `tag_id = "<tag_id>"`
 - delete all bookmarks of the tag
 

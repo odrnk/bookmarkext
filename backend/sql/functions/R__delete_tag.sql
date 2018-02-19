@@ -3,6 +3,7 @@ RETURNS void AS $$
 #variable_conflict use_variable
 BEGIN
     delete from bm.tag_arrow ta where ta.tag_id = tag_id;
+    delete from bm.tag_arrow ta where ta.parent_tag_id = tag_id;
 
     with bookmarks as (
         delete from bm.bookmark_tag bt

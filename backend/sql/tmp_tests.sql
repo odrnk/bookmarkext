@@ -273,10 +273,6 @@ end if;
 end $tests$;
 */
 
-select * from bm.tag
-select * from bm.get_child_tags('34ae2bea-e263-11e7-a198-1ffbe6aa0449')
-select * from bm.root_tag offset 1 limit 2;
- ('34ae2bea-e263-11e7-a198-1ffbe6aa0449')
 
 
 BEGIN TRANSACTION;
@@ -285,4 +281,19 @@ SELECT * FROM unit_tests.begin();
 ROLLBACK TRANSACTION;
 
 
-delete from bm.bookmark where id = '318a1976-0c46-11e8-92a1-974404216d84'
+
+select * from bm.bookmark_tag bt
+where bt.tag_id = '34ae2bea-e263-11e7-a198-1ffbe6aa0449'
+
+
+insert into bm.tag(id, name)
+values
+    (bm.generate_id(),'aaa'), --"42657d18-14e7-11e8-bcf2-8fbe6493b9ed"
+    (bm.generate_id(),'bbb'); --"4265cb38-14e7-11e8-bcf3-fb8959e89ebf"
+delete from bm.tag where name in ('aaaa','bbbb');
+
+select * from bm.tag_arrow
+select * from bm.tag
+select * from bm.bookmark
+
+
