@@ -18,7 +18,7 @@ import Data.Aeson.Types (Value)
 import Data.UUID (UUID, fromString)
 import Data.Int
 import AppConfig
-import Data.Text as T (pack)
+import Data.Text as Txt (pack)
 import Data.ByteString.Char8 as C8 (pack)
 import Data.Maybe
 import DBI.Bookmark as B
@@ -60,7 +60,7 @@ getUtcNow = do
 
 data Tag = Tag {
       base :: BaseTag
-    , tags :: Value
+    , tags :: [TI.TagInfo] -- Value
 } deriving (Show)
 
 data BaseTag = BaseTag {
@@ -79,9 +79,8 @@ instance FromRow Tag where
 data Order = Asc | Desc deriving (Show)
 data Sort = Sort { text :: String, ord :: Order } deriving (Show)
 
-
 sortsToIdentifiers :: [Sort] -> [Identifier]
-sortsToIdentifiers = map $ Identifier . T.pack . text
+sortsToIdentifiers = map $ Identifier . Txt.pack . text
 
 sortsToOrderBy :: [Sort] -> String
 sortsToOrderBy [] = ""
