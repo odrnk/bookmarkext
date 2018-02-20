@@ -23,6 +23,11 @@ dependencies:
 - text
 - bytestring
 - transformers
+- websockets
+- wai
+- wai-websockets
+- warp
+- http-types
 
 library:
   source-dirs: src

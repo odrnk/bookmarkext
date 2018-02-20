@@ -2,11 +2,10 @@
 module Main where
 
 import DBI
-import Data.UUID (UUID, fromString)
-import Database.PostgreSQL.Simple
-import Database.PostgreSQL.Simple.FromRow
-import Database.PostgreSQL.Simple.FromField
+import WebApp
+import Network.Wai.Handler.Warp (run)
 
 main :: IO ()
 main = do
-    print "asdf"
+    putStrLn $ "http://localhost:18080/"
+    run 18080 app
