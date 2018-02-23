@@ -28,6 +28,8 @@ dependencies:
 - wai-websockets
 - warp
 - http-types
+- json-rpc-server
+- mtl
 
 library:
   source-dirs: src
