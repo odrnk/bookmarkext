@@ -3,8 +3,11 @@
 module DBI
     ( getDbConnection
     , createBookmark
-    , Tag
-    , BaseTag
+    , getRootTags
+    , Sort (..)
+    , Order (..)
+    , Tag (..)
+    , BaseTag (..)
     ) where
 
 import Database.PostgreSQL.Simple
@@ -18,11 +21,12 @@ import Data.Aeson.Types (Value)
 import Data.UUID (UUID, fromString)
 import Data.Int
 import AppConfig
-import Data.Text as Txt (pack)
 import Data.ByteString.Char8 as C8 (pack)
 import Data.Maybe
 import DBI.Bookmark as B
 import DBI.TagInfo as TI
+import DBI.Tag
+import DBI.Sort
 
 getDbConnectionInfo :: IO ConnectInfo
 getDbConnectionInfo = do
@@ -57,35 +61,6 @@ getUtcNow = do
 --     now <- getUtcNow
 --     id <- createBookmark conn "test_url23" "asdf23 title" "as2 desc" 11 now []
 --     return id
-
-data Tag = Tag {
-      base :: BaseTag
-    , tags :: [TI.TagInfo] -- Value
-} deriving (Show)
-
-data BaseTag = BaseTag {
-      id :: UUID
-    , name :: String
-    , dateAdded :: LocalTime
-    , dateModified :: LocalTime
-} deriving (Show)
-
-instance FromRow BaseTag where
-    fromRow = BaseTag <$> field <*> field <*> field <*> field
-
-instance FromRow Tag where
-    fromRow = Tag <$> fromRow <*> field
-
-data Order = Asc | Desc deriving (Show)
-data Sort = Sort { text :: String, ord :: Order } deriving (Show)
-
-sortsToIdentifiers :: [Sort] -> [Identifier]
-sortsToIdentifiers = map $ Identifier . Txt.pack . text
-
-sortsToOrderBy :: [Sort] -> String
-sortsToOrderBy [] = ""
-sortsToOrderBy sorts = " order by" ++ body
-    where body = tail $ sorts >>= (\s -> ", ? " ++ show (ord s))
 
 getRootTags :: Connection -> [Sort] -> Int -> Int -> IO [BaseTag]
 getRootTags conn sorts skip take = query conn queryStr $ (sortsToIdentifiers sorts) :. (skip, take)
@@ -160,4 +135,3 @@ updateVisitInfo conn url lastVisitDate visitCount = execute conn queryStr (url, 
     where queryStr = "DO $$ BEGIN \
         \ perform bm.update_visit_info(?::text, ?::timestamp, ?::smallint); \
         \ END $$;"
-

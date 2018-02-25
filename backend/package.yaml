@@ -30,6 +30,7 @@ dependencies:
 - http-types
 - json-rpc-server
 - mtl
+- unordered-containers
 
 library:
   source-dirs: src

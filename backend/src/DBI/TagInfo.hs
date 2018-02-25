@@ -1,5 +1,4 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances, DeriveGeneric #-}
 module DBI.TagInfo
     ( TagInfo(..)
     ) where
